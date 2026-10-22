@@ -28,7 +28,7 @@ type Drawing = {
 };
 
 export const travelEdits: TravelEdit[] = [
-  { title: "Calanque D'En-Vau Hike", place: "Cassis, France", video: "/travel/calanque.mp4", preview: "/travel/calanque-preview.mp4", poster: "/travel/calanque.jpg" },
+  { title: "Calanque D'En-Vau Hike", place: "Cassis, France", video: "/travel/calanque.mp4", preview: "travel/calanque-web.mp4", poster: "/travel/calanque.jpg" },
   { title: "Swiss Summer", place: "Switzerland", video: "/travel/swiss-summer.mp4", preview: "/travel/swiss-summer-preview.mp4", poster: "/travel/swiss-summer.jpg" },
   { title: "Our china trip", place: "China", video: "/travel/china-trip.mp4", preview: "/travel/china-trip-preview.mp4", poster: "/travel/china-trip.jpg" },
   { title: "Vietnam.", place: "Vietnam", video: "/travel/vietnam.mp4", preview: "/travel/vietnam-preview.mp4", poster: "/travel/vietnam.jpg" },
