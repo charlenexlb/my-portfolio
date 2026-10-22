@@ -40,6 +40,6 @@ export const projects: Project[] = [
     image: "/projects/portfolio.png",
     description: "The site you’re looking at right now! Built to showcase my work and experience, and to experiment with new web technologies.",
     tags: ["Astro", "Tailwind CSS", "Lenis", "TypeScript"],
-    github: "https://github.com/[username]/my-portfolio",
+    github: "https://github.com/charlenexlb/my-portfolio",
   },
 ];

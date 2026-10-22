@@ -10,11 +10,11 @@ import { lenis } from "./smooth-scroll";
 if (lenis) {
   const scroller = lenis;
   const scenes = Array.from(document.querySelectorAll<HTMLElement>("[data-scene]"));
-  // Title words are animated in CSS where the browser supports scroll-driven animations (smoother,
-  // see global.css); this script only moves them in browsers that don't
-  const marquees = CSS.supports("animation-timeline: view()")
-    ? []
-    : Array.from(document.querySelectorAll<HTMLElement>("[data-marquee]"));
+  // Title words are animated in CSS where possible (smoother, see global.css). This script moves any
+  // word that CSS animation isn't actually running on: an older browser, or an outdated stylesheet.
+  const marquees = Array.from(document.querySelectorAll<HTMLElement>("[data-marquee]")).filter(
+    (el) => getComputedStyle(el).animationName !== "marquee-slide",
+  );
   const headerPhoto = document.querySelector<HTMLElement>("[data-header-photo]");
   const PHOTO_TURN = 0.05; // degrees per pixel scrolled: one full turn every 7200px
   const clamp = (v: number, min = 0, max = 1) => Math.min(max, Math.max(min, v));
