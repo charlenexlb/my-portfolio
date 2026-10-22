@@ -14,14 +14,17 @@ if (lenis) {
   const headerPhoto = document.querySelector<HTMLElement>("[data-header-photo]");
   const PHOTO_TURN = 0.05; // degrees per pixel scrolled: one full turn every 7200px
   const clamp = (v: number, min = 0, max = 1) => Math.min(max, Math.max(min, v));
+  // No lean and no receding on touch screens: finger flicks are fast and jerky, which made
+  // whole sections tilt and pulse in size. The title words and header photo still move.
+  const fineMotion = window.matchMedia("(pointer: fine)").matches;
 
   const update = () => {
     const vh = window.innerHeight;
     const scrollY = scroller.scroll;
     // Lenis' velocity eases to 0 as scrolling stops, so the lean settles back by itself
-    const lean = clamp(scroller.velocity * 0.05, -2, 2);
+    const lean = fineMotion ? clamp(scroller.velocity * 0.05, -2, 2) : 0;
 
-    for (const el of scenes) {
+    for (const el of fineMotion ? scenes : []) {
       // Measured from layout (offsetTop), not getBoundingClientRect, so our own
       // transforms don't feed back into the next frame's numbers
       const bottom = el.offsetTop + el.offsetHeight - scrollY;

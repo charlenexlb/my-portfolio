@@ -25,7 +25,9 @@ const color = tone === "color";
   class:list={[
     // will-change: scenes.ts moves this every scroll frame; this lets the browser move it as a
     // layer instead of repainting it each time
-    "relative isolate flex min-h-dvh flex-col justify-center overflow-hidden px-12 py-24 will-change-transform",
+    // min-h-svh, not dvh: on phones dvh changes as the address bar slides in and out, which
+    // resizes every section mid-scroll and makes the page jump
+    "relative isolate flex min-h-svh flex-col justify-center overflow-hidden px-5 py-16 will-change-transform sm:px-8 sm:py-24 lg:px-12",
     color && "bg-brand text-white",
   ]}
 >

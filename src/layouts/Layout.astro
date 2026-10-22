@@ -47,7 +47,8 @@ const ogImage = new URL("/og.png", Astro.site ?? Astro.url);
     <main>
       <slot />
     </main>
-    <footer class="border-t border-stone-200 px-12 py-10">
+    <!-- Extra bottom padding on phones so the floating nav doesn't cover the footer -->
+    <footer class="border-t border-stone-200 px-5 pt-10 pb-24 sm:px-8 md:pb-10 lg:px-12">
       <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
         <p class="text-sm text-stone-600">© {new Date().getFullYear()} {site.name}</p>
         <SocialLinks links={["linkedin", "github", "instagram", "email"]} size="sm" />
