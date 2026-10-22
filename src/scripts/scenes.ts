@@ -46,11 +46,11 @@ if (lenis) {
     if (headerPhoto) headerPhoto.style.transform = `rotate(${scrollY * PHOTO_TURN}deg)`;
 
     for (const el of marquees) {
-      const section = el.parentElement!;
-      const top = section.offsetTop - scrollY;
-      // 0 when the section enters at the bottom, 1 when it leaves at the top
-      const progress = clamp((vh - top) / (vh + section.offsetHeight));
-      el.style.transform = `translateX(${(0.5 - progress) * 50}vw)`;
+      // Same path as the CSS version: 0 as the word enters at the bottom, 1 once its centre
+      // reaches the middle of the screen, where it then stays
+      const top = el.parentElement!.offsetTop + el.offsetTop - scrollY;
+      const progress = clamp((vh - top) / (vh / 2 + el.offsetHeight / 2));
+      el.style.transform = `translateX(${(1 - progress) * 25}vw)`;
     }
   };
 

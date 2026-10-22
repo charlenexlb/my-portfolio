@@ -66,20 +66,19 @@
   }
 }
 
-/* Giant section title words ([data-marquee] in Section.astro) slide from right to left as their
-   section passes through the screen. Done as a CSS scroll-driven animation, which the browser runs
-   in step with the scroll itself, so it stays smooth on phones too. Browsers without support fall
-   back to src/scripts/scenes.ts. */
+/* Giant section title words ([data-marquee] in Section.astro) slide in from the right as they come
+   into view and come to rest in the centre once they reach the middle of the screen; scrolling
+   back up slides them out again. Done as a CSS scroll-driven animation, which the browser runs in
+   step with the scroll itself, so it stays smooth on phones too. Browsers without support fall back
+   to src/scripts/scenes.ts, which follows the same path. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    [data-scene]:has(> [data-marquee]) {
-      view-timeline-name: --section;
-    }
-
     [data-marquee] {
       animation: marquee-slide linear both;
-      animation-timeline: --section;
-      animation-range: cover;
+      /* The word's own position on screen: from just entering at the bottom (cover 0%)
+         to its centre reaching the middle of the screen (cover 50%) */
+      animation-timeline: view();
+      animation-range: cover 0% cover 50%;
     }
   }
 }
@@ -89,7 +88,7 @@
     transform: translateX(25vw);
   }
   to {
-    transform: translateX(-25vw);
+    transform: none;
   }
 }
 
