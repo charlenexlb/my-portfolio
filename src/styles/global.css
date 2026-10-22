@@ -66,6 +66,33 @@
   }
 }
 
+/* Giant section title words ([data-marquee] in Section.astro) slide from right to left as their
+   section passes through the screen. Done as a CSS scroll-driven animation, which the browser runs
+   in step with the scroll itself, so it stays smooth on phones too. Browsers without support fall
+   back to src/scripts/scenes.ts. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-scene]:has(> [data-marquee]) {
+      view-timeline-name: --section;
+    }
+
+    [data-marquee] {
+      animation: marquee-slide linear both;
+      animation-timeline: --section;
+      animation-range: cover;
+    }
+  }
+}
+
+@keyframes marquee-slide {
+  from {
+    transform: translateX(25vw);
+  }
+  to {
+    transform: translateX(-25vw);
+  }
+}
+
 /* Fade-in on scroll (src/scripts/reveal.ts adds these classes to [data-reveal] elements).
    Uses transform, not Tailwind's translate utilities, so it doesn't clash with hover lifts. */
 .reveal {

@@ -112,13 +112,14 @@ const placeholderShapes = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "asp
       {experience.map((job) => (
         <li
           data-reveal
+          data-activate
           class="group relative flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-6 transition sm:flex-row sm:gap-6 sm:p-8 duration-300 hover:-translate-y-1 hover:border-stone-300 hover:shadow-xl"
           style={`--brand-color: ${job.color}`}
         >
           <!-- Sits on the line; fills with the company's color when you hover the card -->
           <span
             aria-hidden="true"
-            class="absolute top-10 -left-[1.125rem] h-3 w-3 sm:-left-[2.125rem] rounded-full bg-stone-300 ring-4 ring-white transition duration-300 group-hover:bg-(--brand-color)"
+            class="absolute top-10 -left-[1.125rem] h-3 w-3 sm:-left-[2.125rem] rounded-full bg-stone-300 ring-4 ring-white transition duration-300 group-hover:bg-(--brand-color) group-data-active:bg-(--brand-color)"
           ></span>
 
           {job.logo ? (
@@ -129,12 +130,12 @@ const placeholderShapes = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "asp
               height="56"
               loading="lazy"
               decoding="async"
-              class="h-10 w-10 shrink-0 rounded-xl object-contain sm:h-14 sm:w-14 opacity-60 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+              class="h-10 w-10 shrink-0 rounded-xl object-contain sm:h-14 sm:w-14 opacity-60 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0 group-data-active:opacity-100 group-data-active:grayscale-0"
             />
           ) : (
             <div
               aria-hidden="true"
-              class="flex h-10 w-10 shrink-0 items-center sm:h-14 sm:w-14 justify-center rounded-xl bg-stone-100 text-lg font-semibold text-stone-500 transition duration-300 group-hover:bg-(--brand-color) group-hover:text-white"
+              class="flex h-10 w-10 shrink-0 items-center sm:h-14 sm:w-14 justify-center rounded-xl bg-stone-100 text-lg font-semibold text-stone-500 transition duration-300 group-hover:bg-(--brand-color) group-hover:text-white group-data-active:bg-(--brand-color) group-data-active:text-white"
             >
               {job.company.slice(0, 3)}
             </div>
@@ -358,5 +359,6 @@ const placeholderShapes = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "asp
     import "../scripts/carousel";
     import "../scripts/lightbox";
     import "../scripts/hero-cards";
+    import "../scripts/activate";
   </script>
 </Layout>
