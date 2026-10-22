@@ -3,8 +3,9 @@
 //
 // label:   optional small tag above the title, e.g. "Bachelor end project".
 // image:   optional screenshot in /src/assets (e.g. "/projects/bep.png"); Astro optimises it.
-// video:   optional short clip in /public (e.g. "/projects/bep.mp4"). Plays muted on a loop.
-//          Use image OR video; without either the card shows a plain placeholder.
+// video:   optional short clip in /public (e.g. "/projects/bep.mp4"). Plays muted on a loop while
+//          the card is on screen. With a video, image becomes its poster (the still shown before
+//          it plays). Without either, the card shows a plain placeholder.
 // github / demo: optional links. Leave one out and its button disappears.
 type Project = {
   title: string;

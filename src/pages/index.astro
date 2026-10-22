@@ -13,6 +13,10 @@ import { asset, findAsset } from "../lib/images";
 // Optimised copies made at build time (WebP, sized for how they're shown), for the places
 // that need a plain URL rather than an <Image>: video posters and the full-size lightbox view
 const aboutPhoto = findAsset(site.aboutPhoto);
+// Poster stills for project videos (the project's image, if it has one)
+const projectPosters = await Promise.all(
+  projects.map((p) => (p.video && p.image ? getImage({ src: asset(p.image), width: 960, format: "webp" }) : undefined)),
+);
 
 // Polaroid cards scattered around the intro headline (wide screens only). pos and rotate place
 // them; depth is how far each drifts with the mouse (src/scripts/hero-cards.ts), so they feel layered.
@@ -166,13 +170,15 @@ const placeholderShapes = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "asp
         data-lenis-prevent-horizontal
         class="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth scroll-px-2 px-2 pt-2 pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-      {projects.map((project) => (
+      {projects.map((project, i) => (
         <li data-reveal class="group flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-stone-300 hover:shadow-xl sm:w-md">
           <div class="aspect-video overflow-hidden bg-stone-100">
             {project.video ? (
               <video
                 src={project.video}
-                autoplay
+                poster={projectPosters[i]?.src}
+                preload="metadata"
+                data-play-in-view
                 muted
                 loop
                 playsinline
@@ -360,5 +366,6 @@ const placeholderShapes = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "asp
     import "../scripts/lightbox";
     import "../scripts/hero-cards";
     import "../scripts/activate";
+    import "../scripts/play-in-view";
   </script>
 </Layout>

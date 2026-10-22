@@ -34,6 +34,8 @@ if (dialog && content) {
       video.controls = true;
       video.autoplay = true;
       video.playsInline = true;
+      // Show the tile's still while the full video loads
+      video.poster = trigger.querySelector("video")?.poster ?? "";
       video.className = mediaClass;
       open(video);
     });
