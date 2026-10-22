@@ -12,15 +12,19 @@ if (lenis) {
   const scenes = Array.from(document.querySelectorAll<HTMLElement>("[data-scene]"));
   // Title words are animated in CSS where possible (smoother, see global.css). This script moves any
   // word that CSS animation isn't actually running on: an older browser, or an outdated stylesheet.
-  const marquees = Array.from(document.querySelectorAll<HTMLElement>("[data-marquee]")).filter(
-    (el) => getComputedStyle(el).animationName !== "marquee-slide",
-  );
+  // Not on touch screens, though: a script can't keep up with phone scrolling, so there the words
+  // stay still rather than slide jerkily.
+  const fineMotion = window.matchMedia("(pointer: fine)").matches;
+  const marquees = fineMotion
+    ? Array.from(document.querySelectorAll<HTMLElement>("[data-marquee]")).filter(
+        (el) => getComputedStyle(el).animationName !== "marquee-slide",
+      )
+    : [];
   const headerPhoto = document.querySelector<HTMLElement>("[data-header-photo]");
   const PHOTO_TURN = 0.05; // degrees per pixel scrolled: one full turn every 7200px
   const clamp = (v: number, min = 0, max = 1) => Math.min(max, Math.max(min, v));
-  // No lean and no receding on touch screens: finger flicks are fast and jerky, which made
-  // whole sections tilt and pulse in size. The title words and header photo still move.
-  const fineMotion = window.matchMedia("(pointer: fine)").matches;
+  // No lean and no receding on touch screens (fineMotion above): finger flicks are fast and jerky,
+  // which made whole sections tilt and pulse in size. The header photo still turns.
 
   const update = () => {
     const vh = window.innerHeight;

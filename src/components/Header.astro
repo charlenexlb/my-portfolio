@@ -37,7 +37,8 @@ const nav = [
     <!-- The links sit together in a liquid-glass pill, like the buttons. On phones the pill floats at
          the bottom of the screen, within thumb reach; from tablet size up it sits in the header. -->
     <nav aria-label="Sections" class="fixed inset-x-0 bottom-4 flex justify-center md:static md:block">
-      <ul class="glass flex gap-0.5 rounded-full bg-white/80 p-1 sm:gap-1 sm:p-1.5 md:bg-transparent">
+      <!-- Solid on phones: a blurred glass bar floating over scrolling content is slow on iPhones -->
+      <ul class="flex gap-0.5 rounded-full border border-stone-200/80 bg-white/95 p-1 shadow-lg sm:gap-1 sm:p-1.5 md:glass md:bg-transparent">
         {nav.map(({ href, label }) => (
           <li>
             <a href={href} data-nav-link class="group/link relative block rounded-full px-3 py-2 text-[13px] font-medium whitespace-nowrap max-[360px]:px-2 max-[360px]:text-xs sm:px-5 sm:py-2.5 sm:text-[17px] text-stone-800 transition duration-300 hover:bg-white/80 aria-[current=true]:bg-white aria-[current=true]:text-brand aria-[current=true]:shadow-sm">
