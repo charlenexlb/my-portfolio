@@ -1,16 +1,362 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import { site } from "../data/site";
+import { experience } from "../data/experience";
+import { projects } from "../data/projects";
+import { travelEdits, drawings } from "../data/creative";
+import CarouselButtons from "../components/CarouselButtons.astro";
+import Scribble from "../components/Scribble.astro";
+import { Image, getImage } from "astro:assets";
+import { asset, findAsset } from "../lib/images";
+
+// Optimised copies made at build time (WebP, sized for how they're shown), for the places
+// that need a plain URL rather than an <Image>: video posters and the full-size lightbox view
+const aboutPhoto = findAsset(site.aboutPhoto);
+
+// Polaroid cards scattered around the intro headline (wide screens only). pos and rotate place
+// them; depth is how far each drifts with the mouse (src/scripts/hero-cards.ts), so they feel layered.
+const heroCards = [
+  { image: site.aboutPhoto, caption: "me", href: "#about", pos: "top-[22%] left-[2.5%]", rotate: "-rotate-6", depth: 0.04 },
+  { image: "/drawings/drawing1.jpg", caption: "pencil, 2023", href: "#beyond-code", pos: "bottom-[10%] left-[8%]", rotate: "rotate-3", depth: 0.07 },
+  { image: "/travel/calanque.jpg", caption: "Cassis", href: "#beyond-code", pos: "top-[18%] right-[3%]", rotate: "rotate-6", depth: 0.06 },
+  { image: "/drawings/drawing4.jpg", caption: "pencil, 2024", href: "#beyond-code", pos: "bottom-[12%] right-[7%]", rotate: "-rotate-3", depth: 0.035 },
+].filter((card) => findAsset(card.image));
+const posters = await Promise.all(
+  travelEdits.map((e) => (e.poster ? getImage({ src: asset(e.poster), width: 960, format: "webp" }) : undefined)),
+);
+const drawingsLarge = await Promise.all(
+  drawings.map((d) => (d.image ? getImage({ src: asset(d.image), width: 1600, format: "webp" }) : undefined)),
+);
+
+// Placeholder drawings get varied shapes so the grid looks like it will with real art
+const placeholderShapes = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "aspect-[4/3]"];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <!-- Not a <Section>: the top padding clears the fixed header (7.75rem) so the content centers
+       in the visible area, and the bigger bottom padding lifts it a bit above center -->
+  <section id="top" data-scene class="relative isolate flex min-h-dvh will-change-transform flex-col items-center justify-center overflow-hidden px-12 pt-[calc(7.75rem+3rem)] pb-40 text-center">
+    <!-- Polaroids around the headline: drawings, a travel still and you. Only on wide screens, where
+         there's room beside the text. Decorative for screen readers (the same content is below). -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 hidden xl:block">
+      {heroCards.map((card) => (
+        <a
+          href={card.href}
+          tabindex="-1"
+          data-hero-card
+          data-depth={card.depth}
+          data-cursor="View"
+          class={`pointer-events-auto absolute ${card.pos} transition-transform duration-700 ease-out`}
+        >
+          <figure class={`w-36 rounded-lg bg-white p-2 pb-3 2xl:w-44 shadow-xl transition duration-300 hover:-translate-y-2 hover:rotate-0 hover:shadow-2xl ${card.rotate}`}>
+            <Image src={asset(card.image!)} alt="" widths={[200, 400]} sizes="(min-width: 1536px) 11rem, 9rem" class="aspect-4/5 w-full rounded object-cover" />
+            <figcaption class="mt-2 font-serif text-lg text-stone-600 italic">{card.caption}</figcaption>
+          </figure>
+        </a>
+      ))}
+    </div>
+
+    <p class="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-white/70 bg-sage-soft px-3.5 py-1.5 text-sm font-medium text-sage-deep shadow-[inset_0_1px_0_rgb(255_255_255/0.9),0_8px_24px_-10px_color-mix(in_srgb,var(--color-brand)_35%,transparent)]">
+      <!-- Green dot with a soft "live" pulse around it -->
+      <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
+        <span class="absolute inset-0 rounded-full bg-sage opacity-60 motion-safe:animate-ping"></span>
+        <span class="relative h-2.5 w-2.5 rounded-full bg-sage"></span>
+      </span>
+      Open to projects
+    </p>
+
+    <h1 class="max-w-3xl font-serif text-6xl leading-[1.1] tracking-[0.008em] 2xl:max-w-4xl 2xl:text-7xl">Hi, I'm {site.name}, a software engineer who loves <Scribble>creativity</Scribble>.</h1>
+
+    <p class="mt-6 max-w-prose text-lg leading-relaxed text-stone-600">
+      TU Delft graduate · interested in backend & UI/UX, from the system behind a product to the people who use it.
+    </p>
+
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <a
+        href="#projects"
+        data-magnetic
+        class="glass-brand rounded-full px-6 py-3 text-sm font-medium text-white transition duration-300 hover:-translate-y-0.5"
+      >
+        View projects
+      </a>
+    </div>
+  </section>
+
+  <Section id="about" title="About" tone="color">
+    <!-- Photo next to the text (stacked on phones). Add your picture as src/assets/about.jpg,
+         or change aboutPhoto in src/data/site.ts; until then a placeholder shows. -->
+    <div class="grid w-full max-w-5xl items-center gap-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      {aboutPhoto ? (
+        <Image
+          data-reveal
+          src={aboutPhoto}
+          alt={`Photo of ${site.name}`}
+          widths={[400, 800]}
+          sizes="(min-width: 768px) 24rem, 90vw"
+          class="aspect-4/5 w-full rounded-2xl object-cover shadow-xl"
+        />
+      ) : (
+        <div data-reveal class="flex aspect-4/5 w-full flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed border-white/60 bg-white/10 text-center text-white">
+          <span class="text-lg">Your photo here</span>
+          <span class="text-sm text-white/70">src/assets/about.jpg</span>
+        </div>
+      )}
+      <p data-reveal class="rounded-2xl bg-white p-10 text-lg leading-relaxed text-stone-700 shadow-xl">I’m a software engineer with a creative side. During my BSc Computer Science and Engineering at TU Delft (2026), I found that I enjoy both ends of building software: the backend, where I design the logic and systems that make things work, and UI/UX, where engineering meets the people who use it. Away from the screen I draw, paint, film and edit.</p>
+    </div>
+  </Section>
+
+  <Section id="experience" title="Experience">
+    <!-- Timeline: a thin line down the left (the ::before), with a dot beside each card -->
+    <ol class="relative w-full max-w-4xl space-y-6 pl-10 before:absolute before:top-10 before:bottom-10 before:left-3 before:w-px before:bg-stone-200">
+      {experience.map((job) => (
+        <li
+          data-reveal
+          class="group relative flex gap-6 rounded-2xl border border-stone-200 bg-white p-8 transition duration-300 hover:-translate-y-1 hover:border-stone-300 hover:shadow-xl"
+          style={`--brand-color: ${job.color}`}
+        >
+          <!-- Sits on the line; fills with the company's color when you hover the card -->
+          <span
+            aria-hidden="true"
+            class="absolute top-10 -left-[2.125rem] h-3 w-3 rounded-full bg-stone-300 ring-4 ring-white transition duration-300 group-hover:bg-(--brand-color)"
+          ></span>
+
+          {job.logo ? (
+            <img
+              src={job.logo}
+              alt={`${job.company} logo`}
+              width="56"
+              height="56"
+              loading="lazy"
+              decoding="async"
+              class="h-14 w-14 shrink-0 rounded-xl object-contain opacity-60 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-stone-100 text-lg font-semibold text-stone-500 transition duration-300 group-hover:bg-(--brand-color) group-hover:text-white"
+            >
+              {job.company.slice(0, 3)}
+            </div>
+          )}
+
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+              <h3 class="font-serif text-3xl tracking-[0.008em] text-stone-900">{job.role}</h3>
+              <p class="text-stone-500">{job.period}</p>
+            </div>
+            <p class="mt-1 font-medium text-stone-700">{job.company}</p>
+            {job.city && <p class="text-stone-500">{job.city}</p>}
+            <ul class="mt-4 max-w-prose list-disc space-y-2 pl-5 leading-relaxed text-stone-600">
+              {job.points.map((point) => <li>{point}</li>)}
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </Section>
+
+  <Section id="projects" title="Projects" tone="color">
+    <div class="w-full max-w-6xl" data-carousel>
+      <!-- data-lenis-prevent-horizontal: sideways swipes scroll the cards natively,
+           while vertical scrolling still goes to Lenis and moves the page -->
+      <ul
+        data-carousel-track
+        data-lenis-prevent-horizontal
+        class="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth scroll-px-2 px-2 pt-2 pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+      {projects.map((project) => (
+        <li data-reveal class="group flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-stone-300 hover:shadow-xl sm:w-md">
+          <div class="aspect-video overflow-hidden bg-stone-100">
+            {project.video ? (
+              <video
+                src={project.video}
+                autoplay
+                muted
+                loop
+                playsinline
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
+            ) : project.image ? (
+              <Image
+                src={asset(project.image)}
+                alt={`Screenshot of ${project.title}`}
+                widths={[480, 960]}
+                sizes="(min-width: 640px) 28rem, 85vw"
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div class="flex h-full items-center justify-center text-stone-400">Image or video</div>
+            )}
+          </div>
+
+          <div class="flex flex-1 flex-col p-8">
+            {project.label && (
+              <p class="mb-2 text-sm font-medium tracking-wide text-brand uppercase">{project.label}</p>
+            )}
+            <h3 class="font-serif text-3xl leading-tight tracking-[0.008em] text-stone-900">{project.title}</h3>
+            <p class="mt-3 leading-relaxed text-stone-600">{project.description}</p>
+
+            <ul class="mt-5 flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <li class="rounded-full bg-stone-100 px-3 py-1 text-sm text-stone-700">{tag}</li>
+              ))}
+            </ul>
+
+            {(project.github || project.demo) && (
+              <div class="mt-auto flex gap-6 pt-6 text-sm font-medium">
+                {project.github && (
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" class="text-stone-900 hover:text-brand">
+                    GitHub ↗
+                  </a>
+                )}
+                {project.demo && (
+                  <a href={project.demo} target="_blank" rel="noopener noreferrer" class="text-stone-900 hover:text-brand">
+                    Link ↗
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+      </ul>
+
+      <CarouselButtons label="project" />
+    </div>
+  </Section>
+
+  <Section id="beyond-code" title="Beyond code">
+    <!-- Subtitle in a solid pill, so it stays readable over the big title word behind it -->
+    <p data-reveal class="mb-14 rounded-full bg-white px-7 py-3 text-center text-lg text-stone-700 shadow-lg">
+      Away from the screen I draw, paint, film and edit. Here are a few favourites.
+    </p>
+
+    <!-- Travel edits: a scrollable row of videos that preview on hover -->
+    <div class="w-full max-w-6xl" data-carousel>
+      <h3 data-reveal class="mx-2 mb-6 w-fit rounded-full bg-white px-5 py-2 font-medium text-stone-900 shadow-lg">Travel edits</h3>
+      <ul
+        data-carousel-track
+        data-lenis-prevent-horizontal
+        class="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth scroll-px-2 px-2 pt-2 pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {travelEdits.map((edit, i) => (
+          <li data-reveal class="w-80 shrink-0 snap-start sm:w-md">
+            <button
+              type="button"
+              data-lightbox-video={edit.video}
+              data-cursor="Play"
+              data-lightbox-title={edit.title}
+              disabled={!edit.video}
+              class="group block w-full cursor-pointer text-left disabled:cursor-default"
+            >
+              <!-- The light preview clip plays on hover; the full video loads only in the lightbox.
+                   preload="none": nothing downloads until you hover (the poster shows meanwhile) -->
+              <span class="relative block aspect-video overflow-hidden rounded-2xl bg-stone-100 transition duration-300 group-hover:shadow-xl">
+                {edit.video ? (
+                  <video
+                    src={edit.preview ?? edit.video}
+                    poster={posters[i]?.src}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <span class="flex h-full items-center justify-center text-stone-400">Video</span>
+                )}
+                <span
+                  aria-hidden="true"
+                  class="absolute bottom-4 left-4 flex h-10 w-10 items-center justify-center glass rounded-full pl-0.5 text-sm text-stone-900 transition duration-300 group-hover:opacity-0"
+                >
+                  ▶
+                </span>
+              </span>
+              <span class="mt-3 block font-medium text-stone-900">{edit.title}</span>
+              {edit.place && <span class="block text-stone-500">{edit.place}</span>}
+            </button>
+          </li>
+        ))}
+      </ul>
+      <CarouselButtons label="travel edit" />
+    </div>
+
+    <!-- Drawings: a masonry grid, so each piece keeps its own proportions -->
+    <div class="mt-16 w-full max-w-6xl px-2">
+      <h3 data-reveal class="mb-6 w-fit rounded-full bg-white px-5 py-2 font-medium text-stone-900 shadow-lg">Drawings</h3>
+      <ul class="columns-2 gap-6 md:columns-3">
+        {drawings.map((drawing, i) => (
+          <li data-reveal class="mb-6 break-inside-avoid">
+            <button
+              type="button"
+              data-lightbox-image={drawingsLarge[i]?.src}
+              data-cursor="View"
+              data-lightbox-title={drawing.title}
+              disabled={!drawing.image}
+              class="group block w-full cursor-zoom-in overflow-hidden rounded-2xl bg-stone-100 transition duration-300 hover:shadow-xl disabled:cursor-default"
+            >
+              {drawing.image ? (
+                <Image
+                  src={asset(drawing.image)}
+                  alt={drawing.title}
+                  widths={[400, 800, 1200]}
+                  sizes="(min-width: 768px) 33vw, 50vw"
+                  class="w-full transition duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <span class={`flex items-center justify-center text-stone-400 ${placeholderShapes[i % placeholderShapes.length]}`}>
+                  Drawing
+                </span>
+              )}
+            </button>
+            <p class="mt-3 font-medium text-stone-900">{drawing.title}</p>
+            {drawing.medium && <p class="text-stone-500">{drawing.medium}</p>}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Lightbox: opened by src/scripts/lightbox.ts. Click outside or press Esc to close. -->
+    <dialog
+      data-lightbox
+      aria-label="Media viewer"
+      class="m-auto max-h-none max-w-none bg-transparent p-0 opacity-0 transition-[opacity,display,overlay] transition-discrete duration-300 backdrop:bg-black/80 backdrop:backdrop-blur-sm open:opacity-100 starting:open:opacity-0"
+    >
+      <div data-lightbox-content class="flex max-h-[85dvh] max-w-[90vw] items-center justify-center"></div>
+      <button
+        type="button"
+        data-lightbox-close
+        aria-label="Close"
+        class="fixed top-6 right-6 flex h-12 w-12 items-center justify-center glass rounded-full text-xl text-stone-900 transition"
+      >
+        ✕
+      </button>
+    </dialog>
+  </Section>
+
+  <Section id="contact" tone="color">
+    <div data-reveal class="flex max-w-2xl flex-col items-center text-center">
+      <p class="font-serif text-6xl leading-tight tracking-[0.008em] text-white">Let's build something together.</p>
+      <p class="mt-4 max-w-prose text-lg leading-relaxed text-white/85">
+        Have a project in mind, or just want to say hi? My inbox is always open.
+      </p>
+
+      <a
+        href={`mailto:${site.email}`}
+        data-magnetic
+        class="group glass mt-10 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-lg font-medium text-brand transition duration-300 hover:-translate-y-0.5"
+      >
+        {site.email}
+        <span aria-hidden="true" class="transition duration-300 group-hover:translate-x-1">→</span>
+      </a>
+
+    </div>
+  </Section>
+
+  <script>
+    import "../scripts/carousel";
+    import "../scripts/lightbox";
+    import "../scripts/hero-cards";
+  </script>
+</Layout>

@@ -1,0 +1,26 @@
+---
+// Wraps a word with a hand-drawn pencil underline that draws itself when it comes into view
+// (src/scripts/scribble.ts). Usage: <Scribble>creativity</Scribble>
+const filterId = `pencil-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<span class="relative inline-block whitespace-nowrap">
+  <slot />
+  <svg
+    data-scribble
+    aria-hidden="true"
+    viewBox="0 0 200 24"
+    preserveAspectRatio="none"
+    class="pointer-events-none absolute -bottom-3 left-[-4%] h-[0.45em] w-[108%] overflow-visible text-brand"
+  >
+    <!-- Slight grain and wobble so the stroke looks like pencil, not a vector line -->
+    <filter id={filterId}>
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="grain" />
+      <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.5" />
+    </filter>
+    <g fill="none" stroke="currentColor" stroke-linecap="round" filter={`url(#${filterId})`}>
+      <path pathLength="1" stroke-width="3.5" d="M3 15 C 35 9, 70 13, 105 10 S 165 6, 197 8" />
+      <path pathLength="1" stroke-width="2" opacity="0.55" d="M14 19 C 55 14, 115 17, 190 12" />
+    </g>
+  </svg>
+</span>

@@ -1,0 +1,24 @@
+---
+// Custom cursor: a dot on the pointer that leaves a fading pencil-line trail behind it.
+// Drawn and moved by src/scripts/cursor.ts, which also sets these states on the root:
+//   data-visible  pointer is over the page
+//   data-hover    over a link or button: a ring appears around the dot
+//   data-label    over [data-cursor="Play"] etc.: the ring becomes a filled circle with that word
+//   data-down     mouse button held: the ring tightens
+//   data-on-color over a coloured section: everything turns white so it stays visible
+// Add data-cursor="Word" to any element to give it a label.
+---
+
+<div data-cursor-root aria-hidden="true" class="group pointer-events-none fixed inset-0 z-100 hidden opacity-0 transition-opacity duration-300 data-visible:opacity-100">
+  <canvas data-cursor-trail class="absolute inset-0 h-full w-full"></canvas>
+  <div data-cursor-ring class="absolute top-0 left-0">
+    <div
+      class="flex h-4 w-4 -translate-1/2 scale-50 items-center justify-center rounded-full border border-brand/50 opacity-0 group-data-on-color:border-white/70 transition-all duration-300 ease-out group-data-hover:h-12 group-data-hover:w-12 group-data-hover:scale-100 group-data-hover:bg-brand/5 group-data-hover:opacity-100 group-data-label:h-20 group-data-label:w-20 group-data-label:scale-100 group-data-label:border-brand group-data-label:bg-brand group-data-label:opacity-100 group-data-on-color:group-data-label:border-white group-data-on-color:group-data-label:bg-white group-data-down:scale-90"
+    >
+      <span data-cursor-text class="text-sm font-medium text-white group-data-on-color:text-brand opacity-0 transition-opacity duration-200 group-data-label:opacity-100"></span>
+    </div>
+  </div>
+  <div data-cursor-dot class="absolute top-0 left-0">
+    <div class="h-2 w-2 -translate-1/2 rounded-full bg-brand transition-opacity duration-200 group-data-label:opacity-0 group-data-on-color:bg-white"></div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+---
+interface Props {
+  id: string;
+  title?: string;
+  // "light": white background, the big title word in the accent colour.
+  // "color": accent-colour background with white text and a white title word.
+  tone?: "light" | "color";
+}
+
+const { id, title, tone = "light" } = Astro.props;
+const color = tone === "color";
+---
+
+<!--
+  data-scene: recedes as it scrolls away (src/scripts/scenes.ts).
+  data-marquee: the giant title word, which slides sideways as you scroll past. Its lower half sits
+  behind the section's first block (negative margin + -z-10), so start sections with something
+  solid like a card. It's the visible title; the real <h2> is kept for screen readers (sr-only).
+  data-tone: lets the cursor turn white over coloured sections (src/scripts/cursor.ts).
+-->
+<section
+  id={id}
+  data-scene
+  data-tone={tone}
+  class:list={[
+    // will-change: scenes.ts moves this every scroll frame; this lets the browser move it as a
+    // layer instead of repainting it each time
+    "relative isolate flex min-h-dvh flex-col justify-center overflow-hidden px-12 py-24 will-change-transform",
+    color && "bg-brand text-white",
+  ]}
+>
+  {title && <h2 class="sr-only">{title}</h2>}
+  {title && (
+    <p
+      data-marquee
+      aria-hidden="true"
+      class:list={[
+        "pointer-events-none relative -z-10 -mb-[6vw] text-center font-serif text-[15vw] leading-[0.85] whitespace-nowrap select-none will-change-transform",
+        color ? "text-white" : "text-brand",
+      ]}
+    >
+      {title}
+    </p>
+  )}
+  <!-- Centers each block of content; text inside stays left-aligned for readability -->
+  <div class="flex w-full flex-col items-center">
+    <slot />
+  </div>
+</section>

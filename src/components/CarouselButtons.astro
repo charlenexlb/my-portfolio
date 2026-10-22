@@ -1,0 +1,15 @@
+---
+// ← → buttons for a [data-carousel]; wired up by src/scripts/carousel.ts
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+const buttonClass =
+  "glass flex h-12 w-12 items-center justify-center rounded-full text-xl text-stone-900 transition duration-300 hover:-translate-y-0.5 disabled:cursor-default disabled:opacity-30 disabled:hover:translate-y-0";
+---
+
+<div data-carousel-buttons class="flex justify-center gap-3">
+  <button type="button" data-carousel-prev data-magnetic aria-label={`Previous ${label}`} class={buttonClass}>←</button>
+  <button type="button" data-carousel-next data-magnetic aria-label={`Next ${label}`} class={buttonClass}>→</button>
+</div>

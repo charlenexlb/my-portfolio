@@ -1,0 +1,62 @@
+---
+import { Image } from "astro:assets";
+import { site } from "../data/site";
+
+// Sections linked in the nav. The current one gets a line underneath (src/scripts/header.ts).
+const nav = [
+  { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#projects", label: "Projects" },
+  { href: "#beyond-code", label: "Beyond code" },
+];
+---
+
+<!--
+  Fixed (floats over the page) so it can shrink without shifting the content below.
+  header.ts sets data-scrolled once you scroll: it gets smaller and a soft frosted background.
+-->
+<header
+  data-header
+  class="group fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300 data-scrolled:border-stone-200/70 data-scrolled:bg-white/90 data-scrolled:shadow-sm"
+>
+  <!-- Three columns with equal outer widths, so the nav sits exactly in the middle of the page -->
+  <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-8 px-12 py-8 transition-all duration-300 group-data-scrolled:py-3">
+    <a href="#top" class="flex w-fit shrink-0 items-center gap-3">
+      <Image
+        src={site.photo}
+        alt={`Photo of ${site.name}`}
+        width={120}
+        height={120}
+        loading="lazy"
+        data-header-photo
+        class="h-15 w-15 rounded-full object-cover shadow-lg transition-[width,height] duration-300 group-data-scrolled:h-10 group-data-scrolled:w-10"
+      />
+      <span class="font-serif text-3xl tracking-[0.008em] text-brand transition-all duration-300 group-data-scrolled:text-2xl">{site.name}</span>
+    </a>
+
+    <!-- The links sit together in a liquid-glass pill, like the buttons -->
+    <nav aria-label="Sections" class="hidden md:block">
+      <ul class="glass flex gap-1 rounded-full p-1.5">
+        {nav.map(({ href, label }) => (
+          <li>
+            <a href={href} data-nav-link class="group/link relative block rounded-full px-5 py-2.5 text-[17px] font-medium text-stone-800 transition duration-300 hover:bg-white/80 aria-[current=true]:bg-white aria-[current=true]:text-brand aria-[current=true]:shadow-sm">
+              {label}
+              <span
+                aria-hidden="true"
+                class="absolute inset-x-5 bottom-1 h-0.5 origin-center scale-x-0 rounded-full bg-brand transition-transform duration-300 group-hover/link:scale-x-50 group-aria-[current=true]/link:scale-x-100"
+              ></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a
+      href="#contact"
+      data-magnetic
+      class="col-start-3 shrink-0 justify-self-end glass-brand rounded-full px-5 py-3 text-sm font-medium text-white transition duration-300 hover:-translate-y-0.5"
+    >
+      Get in touch
+    </a>
+  </div>
+</header>

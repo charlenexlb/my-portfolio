@@ -1,0 +1,40 @@
+---
+// Round liquid-glass icon buttons that lift and fill with the brand's color on hover.
+// Used in the footer; size "lg" is available for bigger placements.
+import { socials, type SocialKey } from "../data/socials";
+
+interface Props {
+  links: SocialKey[];
+  size?: "sm" | "lg";
+}
+
+const { links, size = "lg" } = Astro.props;
+const buttonSize = size === "lg" ? "h-14 w-14" : "h-10 w-10";
+const iconSize = size === "lg" ? "h-5 w-5" : "h-4 w-4";
+---
+
+<ul class:list={["flex", size === "lg" ? "gap-4" : "gap-3"]}>
+  {links.map((key) => {
+    const { label, url, Icon, color } = socials[key];
+    const external = !url.startsWith("mailto:");
+    return (
+      <li>
+        <a
+          href={url}
+          aria-label={label}
+          data-magnetic
+          target={external ? "_blank" : undefined}
+          rel={external ? "noopener noreferrer" : undefined}
+          style={`--social-color: ${color}`}
+          class:list={[
+            buttonSize,
+            // hover:bg-none drops the glass gradient so the brand colour fill shows
+            "glass flex items-center justify-center rounded-full text-stone-700 transition duration-300 hover:-translate-y-1 hover:border-(--social-color) hover:bg-(--social-color) hover:bg-none hover:text-white",
+          ]}
+        >
+          <Icon aria-hidden="true" class={iconSize} />
+        </a>
+      </li>
+    );
+  })}
+</ul>
