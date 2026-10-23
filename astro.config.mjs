@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  // The live address. Used for full links in link previews (LinkedIn, WhatsApp, …)
+  site: 'https://charlenebakker.com',
   fonts: [
     // Display font: big headline, section words, card titles, your name (Tailwind: font-serif)
     {
